@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--自定义的Realm-->
+    <bean id="UserRealm" class="cn.juechuang.realm.UserRealm" />
+    <!--缓存管理器-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" />
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="UserRealm"/>
+        <property name="cacheManager" ref="cacheManager"/>
+    </bean>
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--如果没有认证将要跳转的登陆地址 -->
+        <property name="loginUrl"	 value="/login"/>
+        <!-- 配置安全规则 -->
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- 登录页面不拦截 -->
+                /login anon
+                <!--静态资源可以直接访问-->
+                /css/** anon
+                /fonts/** anon
+                /js/** anon
+                /plugin/** anon
+                <!-- user表示身份认证通过或通过记住我认证通过的可以访问 -->
+                /** user
+            </value>
+        </property>
+    </bean>
+</beans>
